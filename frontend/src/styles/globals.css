@@ -1,0 +1,195 @@
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Outfit:wght@400;500;600;700;800;900&display=swap');
+@import "tailwindcss";
+
+
+:root {
+  --background: #060609;
+  --foreground: #f8fafc;
+  --card-bg: #0d0d12;
+  --card-border: #1a1a24;
+  
+  --electric-blue: #0088ff;
+  --electric-blue-glow: rgba(0, 136, 255, 0.15);
+  --orange-accent: #ff5500;
+  --orange-accent-glow: rgba(255, 85, 0, 0.15);
+  
+  --success-green: #10b981;
+  --success-green-glow: rgba(16, 185, 129, 0.12);
+  --error-red: #ef4444;
+  --error-red-glow: rgba(239, 68, 68, 0.12);
+  
+  --text-gray: #94a3b8;
+  --font-display: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  
+  --transition-speed: 0.2s;
+}
+
+@theme {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card-bg);
+  --color-blue-accent: var(--electric-blue);
+  --color-orange-accent: var(--orange-accent);
+  --color-success: var(--success-green);
+  --color-error: var(--error-red);
+  
+  --font-sans: var(--font-display);
+  --font-mono: var(--font-mono);
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-display);
+  overflow-x: hidden;
+  background-image: 
+    radial-gradient(circle at 0% 0%, rgba(0, 136, 255, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 100% 100%, rgba(255, 85, 0, 0.03) 0%, transparent 50%);
+  background-attachment: fixed;
+}
+
+/* Cyberpunk Mesh Grid Backdrop */
+.cyber-grid {
+  position: fixed;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+  background-size: 50px 50px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Premium Card Presets (Sharp corners, solid borders, subtle accent tags) */
+.game-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  position: relative;
+  transition: all var(--transition-speed) cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.game-card:hover {
+  border-color: #33333b;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+  transform: translateY(-2px);
+}
+
+/* Futuristic gaming buttons */
+.btn-game {
+  position: relative;
+  background: transparent;
+  color: #fff;
+  border: 1px solid var(--electric-blue);
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 14px 28px;
+  cursor: pointer;
+  z-index: 1;
+  transition: all var(--transition-speed) ease;
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%);
+}
+
+.btn-game::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 100%;
+  background: linear-gradient(90deg, var(--electric-blue) 0%, rgba(0, 136, 255, 0.6) 100%);
+  z-index: -1;
+  transition: all var(--transition-speed) ease;
+}
+
+.btn-game:hover::before {
+  width: 100%;
+}
+
+.btn-game:hover {
+  box-shadow: 0 0 20px var(--electric-blue-glow);
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}
+
+.btn-game.orange {
+  border-color: var(--orange-accent);
+}
+.btn-game.orange::before {
+  background: linear-gradient(90deg, var(--orange-accent) 0%, rgba(255, 85, 0, 0.6) 100%);
+}
+.btn-game.orange:hover {
+  box-shadow: 0 0 20px var(--orange-accent-glow);
+}
+
+.btn-game.danger {
+  border-color: var(--error-red);
+}
+.btn-game.danger::before {
+  background: linear-gradient(90deg, var(--error-red) 0%, rgba(255, 51, 68, 0.6) 100%);
+}
+.btn-game.danger:hover {
+  box-shadow: 0 0 20px var(--error-red-glow);
+}
+
+/* Custom form selector overrides */
+.select-game {
+  background: #0b0b0d;
+  border: 1px solid var(--card-border);
+  color: #fff;
+  padding: 10px 16px;
+  outline: none;
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all var(--transition-speed) ease;
+}
+.select-game:focus {
+  border-color: var(--electric-blue);
+}
+
+/* Glowing text */
+.glow-blue {
+  text-shadow: 0 0 10px var(--electric-blue-glow);
+}
+.glow-orange {
+  text-shadow: 0 0 10px var(--orange-accent-glow);
+}
+
+/* ELO Counter badge */
+.elo-badge {
+  background: linear-gradient(135deg, rgba(255, 85, 0, 0.1) 0%, rgba(19, 19, 22, 0.9) 100%);
+  border: 1px solid rgba(255, 85, 0, 0.3);
+  padding: 6px 12px;
+  font-family: var(--font-mono);
+  font-weight: 800;
+  color: var(--orange-accent);
+}
+
+/* Opponent panel status indicator */
+.typing-pulse {
+  animation: typing-blink 1.2s infinite;
+}
+
+@keyframes typing-blink {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+/* Console & testcase checks */
+.console-line.error { color: var(--error-red); }
+.console-line.success { color: var(--success-green); }
+.console-line.info { color: var(--text-gray); }
+
+.code-block-wrapper {
+  background: #09090b;
+  border: 1px solid var(--card-border);
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  padding: 12px;
+}
