@@ -17,10 +17,28 @@ export const AuthProvider = ({ children }) => {
         return;
       }
       try {
-        const userData = await api.get('/users/me');
+        const res = await fetch('http://localhost:5000/api/users/me', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+
+        // Silently clear stale/invalid tokens without throwing
+        if (res.status === 401 || res.status === 403) {
+          localStorage.removeItem('token');
+          setUser(null);
+          return;
+        }
+
+        if (!res.ok) {
+          throw new Error(`Failed to fetch user: ${res.status}`);
+        }
+
+        const userData = await res.json();
         setUser(userData);
       } catch (err) {
-        console.error('Failed to load user:', err);
+        // Network error or unexpected failure — clear token gracefully
         localStorage.removeItem('token');
         setUser(null);
       } finally {

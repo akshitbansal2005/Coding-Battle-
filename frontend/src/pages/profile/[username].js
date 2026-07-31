@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import DashboardLayout from '@/layouts/DashboardLayout';
 import { api } from '@/utils/api';
 import { useAuth } from '@/hooks/useAuth';
-import { Clock, Flame, TrendingUp, Swords, Shield, ExternalLink, Target } from 'lucide-react';
+import { Clock, ExternalLink, Shield, Swords } from 'lucide-react';
 
 const getRatingTitle = (rating) => {
   if (rating >= 1800) return 'Grandmaster';
@@ -12,11 +12,11 @@ const getRatingTitle = (rating) => {
   return 'Pupil';
 };
 
-const getRatingColor = (rating) => {
-  if (rating >= 1800) return 'text-amber-400';
-  if (rating >= 1500) return 'text-[#bf00ff]';
-  if (rating >= 1200) return 'text-[#0088ff]';
-  return 'text-zinc-400';
+const getRatingAccent = (rating) => {
+  if (rating >= 1800) return { text: 'text-amber-400', border: 'border-amber-500/30', bg: 'bg-amber-500/10' };
+  if (rating >= 1500) return { text: 'text-violet-400', border: 'border-violet-500/30', bg: 'bg-violet-500/10' };
+  if (rating >= 1200) return { text: 'text-indigo-400', border: 'border-indigo-500/30', bg: 'bg-indigo-500/10' };
+  return { text: 'text-zinc-400', border: 'border-zinc-700/50', bg: 'bg-zinc-800/30' };
 };
 
 export default function Profile() {
@@ -46,10 +46,7 @@ export default function Profile() {
     return (
       <DashboardLayout>
         <div className="flex items-center justify-center py-32">
-          <div className="flex flex-col items-center gap-4">
-            <div className="w-10 h-10 rounded-full border-2 border-[#0088ff]/30 border-t-[#0088ff] animate-spin" />
-            <span className="text-xs text-zinc-500 font-mono uppercase tracking-widest animate-pulse">Loading profile...</span>
-          </div>
+          <span className="text-sm text-zinc-500">Loading...</span>
         </div>
       </DashboardLayout>
     );
@@ -58,9 +55,9 @@ export default function Profile() {
   if (!profile) {
     return (
       <DashboardLayout>
-        <div className="flex flex-col items-center justify-center py-32 gap-4">
-          <Shield size={40} className="text-zinc-700" />
-          <div className="text-sm text-zinc-500 font-mono uppercase tracking-widest">Profile not found</div>
+        <div className="flex flex-col items-center justify-center py-32 gap-3">
+          <Shield size={32} className="text-zinc-700" />
+          <p className="text-sm text-zinc-500">Profile not found</p>
         </div>
       </DashboardLayout>
     );
@@ -69,160 +66,144 @@ export default function Profile() {
   const { user, winRate, matches } = profile;
   const totalGames = user.wins + user.losses;
   const isOwnProfile = currentUser?.username === user.username;
+  const accent = getRatingAccent(user.rating);
 
   return (
     <DashboardLayout>
-      {/* Ambient glows */}
-      <div className="absolute top-0 left-[20%] w-[350px] h-[350px] rounded-full bg-[#0088ff]/4 blur-[100px] pointer-events-none z-0" />
-      <div className="absolute bottom-0 right-[10%] w-[300px] h-[300px] rounded-full bg-[#bf00ff]/4 blur-[100px] pointer-events-none z-0" />
+      <div className="flex flex-col gap-8 max-w-4xl">
 
-      <div className="relative z-10 flex flex-col gap-8">
+        {/* ── Hero card ── */}
+        <div className="border border-white/8 rounded-xl p-6 bg-[#111]">
+          <div className="flex flex-col sm:flex-row items-start gap-5">
 
-        {/* ── Hero Profile Card ── */}
-        <div className="bg-gradient-to-br from-white/5 to-white/[0.01] border border-white/5 rounded-2xl p-8 shadow-xl backdrop-blur-md relative overflow-hidden">
-          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+            {/* Avatar */}
+            <div className="relative shrink-0">
+              <img
+                src={user.profilePicture}
+                alt={user.username}
+                className="w-20 h-20 rounded-xl object-cover border border-white/10"
+              />
+              {isOwnProfile && (
+                <span className="absolute -bottom-2 -right-2 text-[10px] bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-1.5 py-0.5 rounded-md font-medium">
+                  You
+                </span>
+              )}
+            </div>
 
-          <div className="flex flex-col md:flex-row items-center md:items-start justify-between gap-8">
-            {/* Left: avatar + name */}
-            <div className="flex flex-col md:flex-row items-center gap-6">
-              <div className="relative">
-                <img
-                  src={user.profilePicture}
-                  alt={user.username}
-                  className="w-24 h-24 rounded-2xl object-cover border border-white/10 shadow-xl"
-                />
-                {isOwnProfile && (
-                  <span className="absolute -bottom-2 -right-2 text-[9px] bg-[#10b981]/20 border border-[#10b981]/30 text-[#10b981] font-mono font-bold px-2 py-0.5 rounded-md uppercase">You</span>
-                )}
+            {/* Info */}
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2.5 flex-wrap">
+                <h1 className="text-xl font-semibold text-white capitalize">{user.username}</h1>
+                <span className={`text-xs font-medium px-2 py-0.5 rounded-md border ${accent.text} ${accent.border} ${accent.bg}`}>
+                  {getRatingTitle(user.rating)}
+                </span>
               </div>
-              <div className="text-center md:text-left">
-                <div className="flex items-center gap-3 justify-center md:justify-start">
-                  <h1 className="text-3xl font-black text-white tracking-tight capitalize">{user.username}</h1>
-                  <span className={`text-xs font-bold font-mono uppercase px-2.5 py-1 rounded-lg border ${
-                    user.rating >= 1800 ? 'text-amber-300 border-amber-400/30 bg-amber-400/10' :
-                    user.rating >= 1500 ? 'text-[#bf00ff] border-[#bf00ff]/30 bg-[#bf00ff]/10' :
-                    user.rating >= 1200 ? 'text-[#0088ff] border-[#0088ff]/30 bg-[#0088ff]/10' :
-                    'text-zinc-400 border-zinc-700 bg-zinc-800/50'
-                  }`}>
-                    {getRatingTitle(user.rating)}
-                  </span>
-                </div>
-                <p className="text-xs text-zinc-500 font-mono mt-1.5 uppercase tracking-wider">
-                  Member since {new Date(user.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
-                </p>
+              <p className="text-xs text-zinc-500 mt-1">
+                Member since {new Date(user.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+              </p>
 
-                {/* Platform badges */}
-                <div className="flex flex-wrap gap-2 mt-3 justify-center md:justify-start">
-                  {user.codeforcesUsername && (
-                    <a
-                      href={`https://codeforces.com/profile/${user.codeforcesUsername}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 bg-red-900/20 border border-red-900/30 text-red-400 text-[10px] px-3 py-1.5 rounded-xl font-mono font-bold uppercase hover:bg-red-900/30 transition-colors"
-                    >
-                      CF: {user.codeforcesUsername}
-                      <ExternalLink size={9} />
-                    </a>
-                  )}
-                  {user.leetcodeUsername && (
-                    <a
-                      href={`https://leetcode.com/${user.leetcodeUsername}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 bg-orange-900/20 border border-orange-900/30 text-orange-400 text-[10px] px-3 py-1.5 rounded-xl font-mono font-bold uppercase hover:bg-orange-900/30 transition-colors"
-                    >
-                      LC: {user.leetcodeUsername}
-                      <ExternalLink size={9} />
-                    </a>
-                  )}
-                </div>
+              {/* Platform links */}
+              <div className="flex flex-wrap gap-2 mt-3">
+                {user.codeforcesUsername && (
+                  <a
+                    href={`https://codeforces.com/profile/${user.codeforcesUsername}`}
+                    target="_blank" rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 border border-white/8 bg-white/[0.03] hover:bg-white/[0.06] text-zinc-300 text-xs px-2.5 py-1 rounded-md transition-colors"
+                  >
+                    Codeforces: {user.codeforcesUsername}
+                    <ExternalLink size={10} className="text-zinc-500" />
+                  </a>
+                )}
+                {user.leetcodeUsername && (
+                  <a
+                    href={`https://leetcode.com/${user.leetcodeUsername}`}
+                    target="_blank" rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 border border-white/8 bg-white/[0.03] hover:bg-white/[0.06] text-zinc-300 text-xs px-2.5 py-1 rounded-md transition-colors"
+                  >
+                    LeetCode: {user.leetcodeUsername}
+                    <ExternalLink size={10} className="text-zinc-500" />
+                  </a>
+                )}
               </div>
             </div>
 
-            {/* Right: ELO + Win Rate stat boxes */}
-            <div className="flex gap-4 shrink-0">
-              <div className="bg-white/[0.03] border border-white/5 rounded-2xl px-8 py-5 text-center">
-                <div className="text-[10px] text-zinc-500 font-mono uppercase tracking-wider mb-1">ELO Rating</div>
-                <div className={`text-3xl font-black font-mono ${getRatingColor(user.rating)}`}>{user.rating}</div>
-                <div className="text-[10px] text-zinc-600 font-mono mt-1">points</div>
+            {/* ELO + Win Rate */}
+            <div className="flex gap-3 shrink-0">
+              <div className={`border ${accent.border} ${accent.bg} rounded-xl px-5 py-4 text-center`}>
+                <p className="text-[11px] text-zinc-500 mb-1">ELO Rating</p>
+                <p className={`text-2xl font-bold ${accent.text}`}>{user.rating}</p>
+                <p className="text-[10px] text-zinc-600 mt-0.5">points</p>
               </div>
-              <div className="bg-white/[0.03] border border-white/5 rounded-2xl px-8 py-5 text-center">
-                <div className="text-[10px] text-zinc-500 font-mono uppercase tracking-wider mb-1">Win Rate</div>
-                <div className={`text-3xl font-black font-mono ${winRate >= 60 ? 'text-[#10b981]' : winRate >= 40 ? 'text-[#0088ff]' : 'text-zinc-400'}`}>
+              <div className="border border-white/8 bg-white/[0.02] rounded-xl px-5 py-4 text-center">
+                <p className="text-[11px] text-zinc-500 mb-1">Win Rate</p>
+                <p className={`text-2xl font-bold ${winRate >= 60 ? 'text-emerald-400' : winRate >= 40 ? 'text-indigo-400' : 'text-zinc-400'}`}>
                   {winRate}%
-                </div>
-                <div className="text-[10px] text-zinc-600 font-mono mt-1">{totalGames} games</div>
+                </p>
+                <p className="text-[10px] text-zinc-600 mt-0.5">{totalGames} games</p>
               </div>
             </div>
           </div>
         </div>
 
-        {/* ── Main content grid ── */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* ── Stats + History grid ── */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-          {/* Left: Stats column */}
-          <div className="flex flex-col gap-6">
-            {/* Performance metrics */}
-            <div className="bg-gradient-to-br from-white/5 to-white/[0.01] border border-white/5 rounded-2xl p-6 shadow-xl backdrop-blur-md relative overflow-hidden">
-              <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-              <h3 className="text-xs font-bold uppercase tracking-wider text-white mb-5 flex items-center gap-2 font-mono">
-                <TrendingUp size={13} className="text-[#10b981]" /> Performance Log
-              </h3>
-              <div className="flex flex-col gap-3">
+          {/* Left: stats */}
+          <div className="flex flex-col gap-4">
+
+            {/* Performance */}
+            <div className="border border-white/8 rounded-xl p-5 bg-[#111]">
+              <p className="text-xs font-medium text-zinc-500 mb-4">Performance</p>
+              <div className="flex flex-col gap-px">
                 {[
-                  { label: 'Total Battles', value: totalGames, color: 'text-white' },
-                  { label: 'Victories', value: user.wins, color: 'text-[#10b981]' },
-                  { label: 'Defeats', value: user.losses, color: 'text-red-400' },
-                  { label: 'Active Streak', value: user.streak > 0 ? `${user.streak} 🔥` : '0', color: user.streak > 0 ? 'text-orange-400' : 'text-zinc-500' },
-                ].map((stat) => (
-                  <div key={stat.label} className="flex items-center justify-between py-2.5 border-b border-white/5 last:border-0">
-                    <span className="text-xs text-zinc-400 font-mono">{stat.label}</span>
-                    <span className={`text-sm font-black font-mono ${stat.color}`}>{stat.value}</span>
+                  { label: 'Total matches', value: totalGames,   color: 'text-white' },
+                  { label: 'Wins',          value: user.wins,    color: 'text-emerald-400' },
+                  { label: 'Losses',        value: user.losses,  color: 'text-red-400' },
+                  { label: 'Streak',        value: user.streak > 0 ? `${user.streak} 🔥` : 0, color: user.streak > 0 ? 'text-amber-400' : 'text-zinc-500' },
+                ].map((s) => (
+                  <div key={s.label} className="flex items-center justify-between py-2.5 border-b border-white/5 last:border-0">
+                    <span className="text-sm text-zinc-400">{s.label}</span>
+                    <span className={`text-sm font-semibold ${s.color}`}>{s.value}</span>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* W/L visual bar */}
+            {/* W/L bar */}
             {totalGames > 0 && (
-              <div className="bg-gradient-to-br from-white/5 to-white/[0.01] border border-white/5 rounded-2xl p-6 shadow-xl backdrop-blur-md">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-white mb-4 font-mono flex items-center gap-2">
-                  <Target size={13} className="text-[#0088ff]" /> Win / Loss Ratio
-                </h3>
-                <div className="flex h-2.5 rounded-full overflow-hidden gap-0.5">
+              <div className="border border-white/8 rounded-xl p-5 bg-[#111]">
+                <div className="flex items-center justify-between mb-3">
+                  <p className="text-xs font-medium text-zinc-500">Win / Loss</p>
+                  <p className="text-xs text-zinc-500">{user.wins}W · {user.losses}L</p>
+                </div>
+                <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
                   <div
-                    className="bg-[#10b981] rounded-full transition-all"
+                    className="h-full bg-emerald-500 rounded-full transition-all"
                     style={{ width: `${winRate}%` }}
                   />
-                  <div
-                    className="bg-red-500 rounded-full transition-all flex-1"
-                  />
                 </div>
-                <div className="flex justify-between mt-2 text-[10px] font-mono">
-                  <span className="text-[#10b981] font-bold">{user.wins}W</span>
-                  <span className="text-red-400 font-bold">{user.losses}L</span>
+                <div className="flex justify-between mt-2">
+                  <span className="text-xs text-emerald-400 font-medium">{winRate}%</span>
+                  <span className="text-xs text-red-400 font-medium">{100 - winRate}%</span>
                 </div>
               </div>
             )}
           </div>
 
-          {/* Right: Battle history */}
+          {/* Right: match history */}
           <div className="lg:col-span-2">
-            <div className="bg-gradient-to-br from-white/5 to-white/[0.01] border border-white/5 rounded-2xl p-6 shadow-xl backdrop-blur-md relative overflow-hidden">
-              <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-              <h3 className="text-xs font-bold uppercase tracking-wider text-white mb-6 border-b border-white/5 pb-4 flex items-center gap-2 font-mono">
-                <Swords size={13} className="text-[#0088ff]" /> Personal Battle History
-              </h3>
+            <div className="border border-white/8 rounded-xl bg-[#111] overflow-hidden">
+              <div className="px-5 py-4 border-b border-white/5">
+                <p className="text-xs font-medium text-zinc-500">Match history</p>
+              </div>
 
               {matches.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-16 gap-4">
-                  <Swords size={32} className="text-zinc-700" />
-                  <p className="text-xs text-zinc-500 font-mono uppercase tracking-widest text-center">
-                    No battles recorded yet
-                  </p>
+                <div className="flex flex-col items-center justify-center py-16 gap-3">
+                  <Swords size={28} className="text-zinc-700" />
+                  <p className="text-sm text-zinc-600">No matches yet</p>
                 </div>
               ) : (
-                <div className="flex flex-col gap-3">
+                <div className="divide-y divide-white/5">
                   {matches.map((m) => {
                     const p1Name = m.player1?.username || 'Player1';
                     const p2Name = m.player2?.username || 'Player2';
@@ -232,48 +213,45 @@ export default function Profile() {
                     const isDraw = !m.winner;
 
                     return (
-                      <div
-                        key={m._id}
-                        className={`flex items-center justify-between gap-4 p-4 rounded-xl border transition-colors duration-150 ${
-                          isDraw
-                            ? 'bg-zinc-800/20 border-zinc-700/20'
-                            : hasWon
-                            ? 'bg-[#10b981]/5 border-[#10b981]/10 hover:bg-[#10b981]/8'
-                            : 'bg-red-900/5 border-red-900/10 hover:bg-red-900/8'
-                        }`}
-                      >
-                        {/* Left: result badge + opponent */}
-                        <div className="flex items-center gap-4">
-                          <span className={`text-xs font-black font-mono w-12 text-center py-1.5 rounded-lg border ${
+                      <div key={m._id} className="flex items-center justify-between gap-4 px-5 py-4 hover:bg-white/[0.02] transition-colors">
+                        {/* Result badge + opponent */}
+                        <div className="flex items-center gap-3">
+                          <span className={`text-xs font-semibold w-10 text-center py-1 rounded-md border ${
                             isDraw
-                              ? 'text-zinc-400 border-zinc-700/50 bg-zinc-800/30'
+                              ? 'text-zinc-400 border-zinc-700/40 bg-zinc-800/20'
                               : hasWon
-                              ? 'text-[#10b981] border-[#10b981]/30 bg-[#10b981]/10'
-                              : 'text-red-400 border-red-900/30 bg-red-900/10'
+                              ? 'text-emerald-400 border-emerald-500/25 bg-emerald-500/10'
+                              : 'text-red-400 border-red-500/25 bg-red-500/10'
                           }`}>
-                            {isDraw ? 'DRAW' : hasWon ? 'WIN' : 'LOSS'}
+                            {isDraw ? 'Draw' : hasWon ? 'Win' : 'Loss'}
                           </span>
 
-                          <div className="flex items-center gap-3">
-                            {opponentAvatar && (
-                              <img src={opponentAvatar} alt="" className="w-7 h-7 rounded-full border border-white/10 object-cover" />
+                          {opponentAvatar && (
+                            <img src={opponentAvatar} alt="" className="w-7 h-7 rounded-full border border-white/10 object-cover" />
+                          )}
+
+                          <div>
+                            <p className="text-sm font-medium text-white">vs {opponentName}</p>
+                            {m.problem?.title && (
+                              <p className="text-xs text-zinc-500 mt-0.5">
+                                {m.problem.title}
+                                {m.problem.difficulty && (
+                                  <span className={`ml-1.5 text-[11px] ${
+                                    m.problem.difficulty === 'Easy' ? 'text-emerald-500' :
+                                    m.problem.difficulty === 'Medium' ? 'text-amber-500' : 'text-red-500'
+                                  }`}>
+                                    {m.problem.difficulty}
+                                  </span>
+                                )}
+                              </p>
                             )}
-                            <div>
-                              <div className="text-sm font-bold text-white font-mono">vs {opponentName}</div>
-                              {m.problem?.title && (
-                                <div className="text-[10px] text-zinc-500 font-mono mt-0.5">
-                                  {m.problem.title}
-                                  <span className="ml-1.5 opacity-60">({m.problem.difficulty})</span>
-                                </div>
-                              )}
-                            </div>
                           </div>
                         </div>
 
-                        {/* Right: duration */}
-                        <div className="flex items-center gap-1.5 text-[11px] text-zinc-500 font-mono shrink-0">
+                        {/* Duration */}
+                        <div className="flex items-center gap-1.5 text-xs text-zinc-500 shrink-0">
                           <Clock size={11} />
-                          <span>{Math.floor(m.duration / 60)}m {m.duration % 60}s</span>
+                          {Math.floor(m.duration / 60)}m {m.duration % 60}s
                         </div>
                       </div>
                     );

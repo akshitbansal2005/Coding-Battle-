@@ -1,147 +1,116 @@
-# ⚔️ Coding Battle — 1v1 Competitive Coding Arena
+# Coding Battle
 
-A real-time **1v1 competitive coding platform** where developers battle each other (or an AI bot) by solving coding challenges. Features ELO-based matchmaking, live code syncing, Monaco editor, and instant verdict execution.
+A real-time **1v1 competitive coding platform** where users can compete against each other (or an AI bot) by solving coding problems. The platform includes matchmaking, live code syncing, an ELO rating system, private rooms, and a clean coding interface powered by Monaco Editor.
 
----
-
-## 🚀 Features
-
-- 🎯 **1v1 Real-Time Battles** — Compete against other users or an AI bot in live coding duels
-- 🤖 **AI Bot Opponent** — `AlphaCode_AI [BOT]` simulates a typing opponent with realistic progress telemetry
-- 🔀 **Smart Matchmaking** — ELO-based queue (±250 range) with platform, difficulty, and topic filters
-- 🔒 **Private Rooms** — Create invite-only rooms with a shareable room code
-- 📊 **ELO Rating System** — Dynamic ELO rating changes after every match (K=32)
-- ⚡ **Live Code Sync** — See opponent's real-time progress (char count, line count, language)
-- 🛡️ **Sandboxed Code Execution** — Backend runs submitted code against test cases securely
-- 🏆 **Leaderboard** — Global rankings sorted by ELO rating
-- 👤 **User Profiles** — Match history, win/loss stats, and streaks
-- 🌙 **Cinematic UI** — Built with Next.js, Framer Motion, GSAP, and TailwindCSS
+The goal of this project is to make competitive programming more interactive by adding a multiplayer gaming experience to coding contests.
 
 ---
 
-## 🛠️ Tech Stack
+## Features
 
-### Backend
-| Technology | Purpose |
-|---|---|
-| **Node.js + Express** | REST API server |
-| **Socket.IO** | Real-time bidirectional communication |
-| **MongoDB + Mongoose** | Database (users, matches, problems, submissions) |
-| **JWT + bcryptjs** | Authentication & password hashing |
-| **dotenv** | Environment variable management |
+- Real-time 1v1 coding battles
+- AI Bot opponent (AlphaCode_AI)
+- ELO-based matchmaking
+- Private rooms with invite codes
+- Dynamic ELO rating updates
+- Monaco Editor integration
+- Live opponent progress updates
+- Automatic code execution and verdicts
+- Global leaderboard
+- User profiles with match history and statistics
+- Responsive UI with smooth animations
+
+---
+
+## 🛠 Tech Stack
 
 ### Frontend
-| Technology | Purpose |
-|---|---|
-| **Next.js 16** | React framework with routing |
-| **Monaco Editor** | VS Code–grade in-browser code editor |
-| **Socket.IO Client** | Real-time match updates |
-| **Framer Motion + GSAP** | Animations & transitions |
-| **TailwindCSS v4** | Styling |
+
+- Next.js
+- React
+- Tailwind CSS
+- Framer Motion
+- GSAP
+- Monaco Editor
+- Socket.IO Client
+
+### Backend
+
+- Node.js
+- Express.js
+- Socket.IO
+- MongoDB
+- Mongoose
+- JWT Authentication
+- bcryptjs
 
 ---
 
-## 📁 Project Structure
+## 📂 Project Structure
 
-```
+```text
 Coding-Battle-/
-├── backend/
-│   ├── config/
-│   │   ├── db.js              # MongoDB connection
-│   │   └── seed.js            # Problem seeding
-│   ├── controllers/
-│   │   ├── authController.js  # Register / Login
-│   │   ├── matchController.js # Match history & retrieval
-│   │   └── userController.js  # Leaderboard & profiles
-│   ├── middleware/
-│   │   └── authMiddleware.js  # JWT auth guard
-│   ├── models/
-│   │   ├── User.js            # User schema (ELO, wins, streaks)
-│   │   ├── Match.js           # Match schema
-│   │   ├── Problem.js         # Problem schema + test cases
-│   │   └── Submission.js      # Submission record schema
-│   ├── routes/
-│   │   ├── authRoutes.js
-│   │   ├── matchRoutes.js
-│   │   └── userRoutes.js
-│   ├── services/
-│   │   ├── executor.js        # Sandboxed code runner
-│   │   └── aiReviewService.js # AI review service
-│   ├── socket/
-│   │   └── socketHandler.js   # All Socket.IO event handlers
-│   ├── .env                   # Environment variables (not committed)
-│   └── server.js              # Entry point
-│
-└── frontend/
-    ├── public/                # Static assets
-    └── src/
-        ├── components/        # Reusable UI components
-        ├── hooks/             # Custom hooks (useAuth, useSocket)
-        ├── layouts/           # DashboardLayout
-        ├── pages/             # Next.js pages
-        │   ├── index.js       # Landing page
-        │   ├── login.js       # Login
-        │   ├── register.js    # Register
-        │   ├── dashboard.js   # Match lobby & matchmaking
-        │   ├── leaderboard.js # Global rankings
-        │   ├── match/[id].js  # Active match room
-        │   └── profile/[username].js
-        ├── styles/
-        │   └── globals.css
-        └── utils/
-            └── api.js         # Axios API client
+
+backend/
+├── config/
+├── controllers/
+├── middleware/
+├── models/
+├── routes/
+├── services/
+├── socket/
+└── server.js
+
+frontend/
+├── public/
+└── src/
+    ├── components/
+    ├── hooks/
+    ├── layouts/
+    ├── pages/
+    ├── styles/
+    └── utils/
 ```
 
 ---
 
-## ⚙️ Getting Started
+## ⚙️ Installation
 
-### Prerequisites
-- **Node.js** v18+
-- **MongoDB** (local instance or MongoDB Atlas)
-- **npm**
-
----
-
-### 1. Clone the Repository
+### Clone the Repository
 
 ```bash
 git clone https://github.com/akshitbansal2005/Coding-Battle-.git
 cd Coding-Battle-
 ```
 
----
-
-### 2. Backend Setup
+### Backend Setup
 
 ```bash
 cd backend
 npm install
 ```
 
-Create a `.env` file in the `backend/` directory:
+Create a `.env` file:
 
 ```env
 PORT=5000
 MONGO_URI=mongodb://127.0.0.1:27017/codearena
-JWT_SECRET=your_super_secret_jwt_key
+JWT_SECRET=your_secret_key
 ```
 
-Start the backend server:
+Run the backend:
 
 ```bash
-# Development (with auto-reload)
 npm run dev
-
-# Production
-npm start
 ```
 
-The backend runs on **http://localhost:5000**
+Backend:
 
----
+```
+http://localhost:5000
+```
 
-### 3. Frontend Setup
+### Frontend Setup
 
 ```bash
 cd frontend
@@ -149,112 +118,132 @@ npm install
 npm run dev
 ```
 
-The frontend runs on **http://localhost:3000**
+Frontend:
+
+```
+http://localhost:3000
+```
 
 ---
 
-## 🔌 API Endpoints
+## API Routes
 
-### Auth
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `POST` | `/api/auth/register` | Register a new user |
-| `POST` | `/api/auth/login` | Login and receive JWT |
+### Authentication
+
+| Method | Route |
+|---------|-------|
+| POST | `/api/auth/register` |
+| POST | `/api/auth/login` |
 
 ### Users
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `GET` | `/api/users/leaderboard` | Fetch global leaderboard |
-| `GET` | `/api/users/:username` | Get user profile & stats |
+
+| Method | Route |
+|---------|-------|
+| GET | `/api/users/leaderboard` |
+| GET | `/api/users/:username` |
 
 ### Matches
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `GET` | `/api/matches/:id` | Get match details |
-| `GET` | `/api/matches/user/:userId` | Get user match history |
 
-### Health
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `GET` | `/api/health` | Server health check |
+| Method | Route |
+|---------|-------|
+| GET | `/api/matches/:id` |
+| GET | `/api/matches/user/:userId` |
 
 ---
 
-## 🔄 Socket.IO Events
+## Socket Events
 
-### Client → Server
-| Event | Payload | Description |
-|-------|---------|-------------|
-| `join-matchmaking` | `{ platform, difficulty, topic, timeLimit }` | Enter the matchmaking queue |
-| `leave-matchmaking` | — | Exit matchmaking queue |
-| `start-bot-match` | `{ platform, difficulty, topic, timeLimit }` | Start a match vs AI bot |
-| `create-private-room` | `{ platform, difficulty, topic, timeLimit }` | Create an invite room |
-| `join-private-room` | `{ roomCode }` | Join a private room |
-| `player-ready` | `{ roomCode, ready }` | Signal ready in lobby |
-| `code-sync` | `{ roomCode, progress, charCount, lineCount, language }` | Broadcast live progress |
-| `submit-solution` | `{ roomCode, code, language }` | Submit solution for verdict |
-| `forfeit-match` | `{ roomCode }` | Forfeit the current match |
+### Client Events
 
-### Server → Client
-| Event | Description |
-|-------|-------------|
-| `queue-status` | Matchmaking queue position/status |
-| `match-found` | Random match paired, includes problem |
-| `private-room-created` | Room created with room code |
-| `player-joined` | Opponent joined the room |
-| `ready-status-updated` | Both players' ready states |
-| `countdown-start` | 5-second countdown begins |
-| `battle-start` | Match is live — problem & timer sent |
-| `opponent-code-sync` | Live opponent progress update |
-| `submission-verdict` | Your submission result |
-| `opponent-submission` | Opponent submitted (verdict visible) |
-| `match-ended` | Winner, ELO changes, and stats |
+- join-matchmaking
+- leave-matchmaking
+- start-bot-match
+- create-private-room
+- join-private-room
+- player-ready
+- code-sync
+- submit-solution
+- forfeit-match
+
+### Server Events
+
+- queue-status
+- match-found
+- battle-start
+- countdown-start
+- opponent-code-sync
+- submission-verdict
+- opponent-submission
+- match-ended
 
 ---
 
-## 🎮 How to Play
+## 🚀 How It Works
 
-1. **Register / Login** to your account
-2. Navigate to the **Dashboard**
-3. Choose your match settings:
-   - **Platform**: LeetCode, Codeforces, etc.
-   - **Difficulty**: Easy / Medium / Hard
-   - **Topic**: Arrays, DP, Graphs, etc.
-   - **Time Limit**: 15–60 minutes
-4. Click **Find Match** to enter the queue, or **vs Bot** to battle `AlphaCode_AI`
-5. Once matched, both players **ready up** in the lobby
-6. A **5-second countdown** begins, then the battle starts
-7. Write your solution in the Monaco editor and **Submit** when done
-8. First to pass all test cases wins — ELO updates immediately!
+1. Register or log in.
+2. Select the platform, difficulty, and topic.
+3. Find a match or play against the AI Bot.
+4. Wait for matchmaking.
+5. Solve the coding problem.
+6. Submit your solution.
+7. The first player to pass all test cases wins.
+8. ELO ratings are updated after every match.
 
 ---
 
-## 🏗️ Environment Variables
+## 📚 What I Learned
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `PORT` | Backend server port | `5000` |
-| `MONGO_URI` | MongoDB connection string | `mongodb://127.0.0.1:27017/codearena` |
-| `JWT_SECRET` | Secret key for JWT signing | *(required)* |
+Building this project helped me improve my understanding of:
 
----
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/your-feature`
-3. Commit your changes: `git commit -m "feat: add your feature"`
-4. Push the branch: `git push origin feature/your-feature`
-5. Open a Pull Request
+- Real-time communication with Socket.IO
+- REST API development using Express.js
+- JWT-based authentication
+- MongoDB database design
+- Code execution workflow
+- ELO rating implementation
+- State management for multiplayer applications
+- Building responsive interfaces using Next.js and Tailwind CSS
 
 ---
 
-## 📄 License
+## Future Improvements
 
-This project is open-source under the [MIT License](LICENSE).
+Some features planned for future versions include:
+
+- Team battles (2v2)
+- Contest mode
+- Friends system
+- In-game chat
+- Daily coding challenges
+- Achievement badges
+- More coding platforms
+- Analytics dashboard
 
 ---
 
-<div align="center">
-  Made with ⚔️ by <a href="https://github.com/akshitbansal2005">Akshit Bansal</a>
-</div>
+## Contributing
+
+Contributions are welcome.
+
+```bash
+Fork the repository
+Create a new branch
+Commit your changes
+Open a Pull Request
+```
+
+---
+
+## License
+
+This project is licensed under the MIT License.
+
+---
+
+## Author
+
+**Akshit Bansal**
+
+GitHub: https://github.com/akshitbansal2005
+
+If you found this project useful, consider giving it a ⭐.
